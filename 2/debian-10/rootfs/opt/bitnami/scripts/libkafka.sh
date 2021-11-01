@@ -624,6 +624,8 @@ zookeeper_set_tls_config_properties()
     zookeeper.ssl.truststore.location=${kafka_zk_truststore_location}
     zookeeper.ssl.truststore.password=${KAFKA_ZOOKEEPER_TLS_TRUSTSTORE_PASSWORD}    
     zookeeper.ssl.hostnameVerification=${KAFKA_ZOOKEEPER_TLS_VERIFY_HOSTNAME}
+    
+    export KAFKA_ZOOKEEPER_TLS_CONFIG_PROPERTIES_FILE="${KAFKA_CONF_DIR}/zk-tls-config.properties"
 }
 ########################
 # Configure Kafka configuration files from environment variables
