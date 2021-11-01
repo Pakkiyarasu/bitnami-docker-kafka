@@ -458,8 +458,13 @@ kafka_create_sasl_scram_zookeeper_users() {
         debug "Creating user ${users[i]} in zookeeper"
         # Ref: https://docs.confluent.io/current/kafka/authentication_sasl/authentication_sasl_scram.html#sasl-scram-overview
         if [[ "${KAFKA_ZOOKEEPER_PROTOCOL:-}" =~ SSL ]]; then
-            zookeeper_set_tls_config_properties
-            debug_execute kafka-configs.sh --zookeeper "$KAFKA_CFG_ZOOKEEPER_CONNECT" --zk-tls-config-file "$KAFKA_ZOOKEEPER_TLS_CONFIG_PROPERTIES_FILE" --alter --add-config "SCRAM-SHA-256=[iterations=8192,password=${passwords[i]}],SCRAM-SHA-512=[password=${passwords[i]}]" --entity-type users --entity-name "${users[i]}"
+            #ZOOKEEPER_SSL_CONFIG=$(zookeeper_get_tls_config)
+            cat >>"${KAFKA_CONF_DIR}/zk-tls-config.properties" <<EOF
+$(zookeeper_get_tls_config)
+
+EOF
+            #zookeeper_set_tls_config_properties
+            debug_execute kafka-configs.sh --zookeeper "$KAFKA_CFG_ZOOKEEPER_CONNECT" --zk-tls-config-file "${KAFKA_CONF_DIR}/zk-tls-config.properties" --alter --add-config "SCRAM-SHA-256=[iterations=8192,password=${passwords[i]}],SCRAM-SHA-512=[password=${passwords[i]}]" --entity-type users --entity-name "${users[i]}"
         else
             debug_execute kafka-configs.sh --zookeeper "$KAFKA_CFG_ZOOKEEPER_CONNECT" --alter --add-config "SCRAM-SHA-256=[iterations=8192,password=${passwords[i]}],SCRAM-SHA-512=[password=${passwords[i]}]" --entity-type users --entity-name "${users[i]}"
         fi    
