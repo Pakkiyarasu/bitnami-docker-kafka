@@ -456,6 +456,9 @@ kafka_create_sasl_scram_zookeeper_users() {
     for ((i = 0; i < ${#users[@]}; i++)); do
         debug "Creating user ${users[i]} in zookeeper"
         # Ref: https://docs.confluent.io/current/kafka/authentication_sasl/authentication_sasl_scram.html#sasl-scram-overview
+        if [["${KAFKA_ZOOKEEPER_PROTOCOL:-}" =~ SSL]]; then
+            
+        fi 
         debug_execute kafka-configs.sh --zookeeper "$KAFKA_CFG_ZOOKEEPER_CONNECT" --alter --add-config "SCRAM-SHA-256=[iterations=8192,password=${passwords[i]}],SCRAM-SHA-512=[password=${passwords[i]}]" --entity-type users --entity-name "${users[i]}"
     done
 }
@@ -608,6 +611,20 @@ zookeeper_get_tls_config() {
           -Dzookeeper.ssl.hostnameVerification=${KAFKA_ZOOKEEPER_TLS_VERIFY_HOSTNAME}"
 }
 
+##################
+# Get Zookeeper zk-tls-config.properties
+##################
+zookeeper_set_tls_config_properties()
+{
+    cat >>"${KAFKA_CONF_DIR}/zk-tls-config.properties" <<EOF
+    zookeeper.clientCnxnSocket=org.apache.zookeeper.ClientCnxnSocketNetty
+    zookeeper.ssl.client.enable=true
+    zookeeper.ssl.keystore.location=${keystore_location}
+    zookeeper.ssl.keystore.password=${KAFKA_ZOOKEEPER_TLS_KEYSTORE_PASSWORD}
+    zookeeper.ssl.truststore.location=${kafka_zk_truststore_location}
+    zookeeper.ssl.truststore.password=${KAFKA_ZOOKEEPER_TLS_TRUSTSTORE_PASSWORD}    
+    zookeeper.ssl.hostnameVerification=${KAFKA_ZOOKEEPER_TLS_VERIFY_HOSTNAME}
+}
 ########################
 # Configure Kafka configuration files from environment variables
 # Globals:
