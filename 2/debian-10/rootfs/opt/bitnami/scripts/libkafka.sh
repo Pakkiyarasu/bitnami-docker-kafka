@@ -460,7 +460,7 @@ kafka_create_sasl_scram_zookeeper_users() {
         if [[ "${KAFKA_ZOOKEEPER_PROTOCOL:-}" =~ SSL ]]; then
             #ZOOKEEPER_SSL_CONFIG=$(zookeeper_get_tls_config)
             #cat >>"${KAFKA_CONF_DIR}/zk-tls-config.properties" <<EOF
-            #zookeeper_get_tls_config
+            $(zookeeper_get_tls_config)
             
             #zookeeper_set_tls_config_properties
             debug_execute kafka-configs.sh --zookeeper "$KAFKA_CFG_ZOOKEEPER_CONNECT" --zk-tls-config-file "$KAFKA_ZOOKEEPER_TLS_CONFIG_PROPERTIES_FILE" --alter --add-config "SCRAM-SHA-256=[iterations=8192,password=${passwords[i]}],SCRAM-SHA-512=[password=${passwords[i]}]" --entity-type users --entity-name "${users[i]}"
