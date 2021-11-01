@@ -464,7 +464,7 @@ $(zookeeper_get_tls_config)
 
 EOF
             #zookeeper_set_tls_config_properties
-            debug_execute kafka-configs.sh --zookeeper "$KAFKA_CFG_ZOOKEEPER_CONNECT" --zk-tls-config-file "${KAFKA_CONF_DIR}/zk-tls-config.properties" --alter --add-config "SCRAM-SHA-256=[iterations=8192,password=${passwords[i]}],SCRAM-SHA-512=[password=${passwords[i]}]" --entity-type users --entity-name "${users[i]}"
+            debug_execute kafka-configs.sh --zookeeper "$KAFKA_CFG_ZOOKEEPER_CONNECT" --zk-tls-config-file "$KAFKA_ZOOKEEPER_TLS_CONFIG_PROPERTIES_FILE" --alter --add-config "SCRAM-SHA-256=[iterations=8192,password=${passwords[i]}],SCRAM-SHA-512=[password=${passwords[i]}]" --entity-type users --entity-name "${users[i]}"
         else
             debug_execute kafka-configs.sh --zookeeper "$KAFKA_CFG_ZOOKEEPER_CONNECT" --alter --add-config "SCRAM-SHA-256=[iterations=8192,password=${passwords[i]}],SCRAM-SHA-512=[password=${passwords[i]}]" --entity-type users --entity-name "${users[i]}"
         fi    
@@ -610,6 +610,20 @@ zookeeper_get_tls_config() {
         cat "$KAFKA_CERTS_DIR"/zookeeper.keystore.key >>"$KAFKA_CERTS_DIR"/zookeeper.keystore.pem
         keystore_location="${KAFKA_CERTS_DIR}/zookeeper.keystore.pem"
     fi
+    
+    cat >>"${KAFKA_CONF_DIR}/zk-tls-config.properties" <<EOF
+zookeeper.clientCnxnSocket=org.apache.zookeeper.ClientCnxnSocketNetty
+zookeeper.ssl.client.enable=true
+zookeeper.ssl.keystore.location=${keystore_location}
+zookeeper.ssl.keystore.password=${KAFKA_ZOOKEEPER_TLS_KEYSTORE_PASSWORD}
+zookeeper.ssl.truststore.location=${kafka_zk_truststore_location}
+zookeeper.ssl.truststore.password=${KAFKA_ZOOKEEPER_TLS_TRUSTSTORE_PASSWORD}    
+zookeeper.ssl.hostnameVerification=${KAFKA_ZOOKEEPER_TLS_VERIFY_HOSTNAME}    
+
+EOF
+
+    export KAFKA_ZOOKEEPER_TLS_CONFIG_PROPERTIES_FILE="${KAFKA_CONF_DIR}/zk-tls-config.properties"
+    
     echo "-Dzookeeper.clientCnxnSocket=org.apache.zookeeper.ClientCnxnSocketNetty \
           -Dzookeeper.client.secure=true \
           -Dzookeeper.ssl.keyStore.location=${keystore_location} \
