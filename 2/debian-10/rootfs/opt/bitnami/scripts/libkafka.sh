@@ -613,10 +613,10 @@ zookeeper_get_tls_config() {
     cat >>"${KAFKA_ZOOKEEPER_TLS_CONFIG_PROPERTIES_FILE}" <<EOF
 zookeeper.clientCnxnSocket=org.apache.zookeeper.ClientCnxnSocketNetty
 zookeeper.ssl.client.enable=true
-zookeeper.ssl.keystore.location=${keystore_location}
-zookeeper.ssl.keystore.password=${KAFKA_ZOOKEEPER_TLS_KEYSTORE_PASSWORD}
-zookeeper.ssl.truststore.location=${kafka_zk_truststore_location}
-zookeeper.ssl.truststore.password=${KAFKA_ZOOKEEPER_TLS_TRUSTSTORE_PASSWORD}    
+zookeeper.ssl.keyStore.location=${keystore_location}
+zookeeper.ssl.keyStore.password=${KAFKA_ZOOKEEPER_TLS_KEYSTORE_PASSWORD}
+zookeeper.ssl.trustStore.location=${kafka_zk_truststore_location}
+zookeeper.ssl.trustStore.password=${KAFKA_ZOOKEEPER_TLS_TRUSTSTORE_PASSWORD}    
 zookeeper.ssl.hostnameVerification=${KAFKA_ZOOKEEPER_TLS_VERIFY_HOSTNAME}    
 
 EOF
