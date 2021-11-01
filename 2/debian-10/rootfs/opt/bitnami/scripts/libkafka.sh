@@ -625,10 +625,11 @@ EOF
     
     echo "-Dzookeeper.clientCnxnSocket=org.apache.zookeeper.ClientCnxnSocketNetty \
           -Dzookeeper.client.secure=true \
-          -Dzookeeper.ssl.keyStore.location=${keystore_location} \
-          -Dzookeeper.ssl.keyStore.password=${KAFKA_ZOOKEEPER_TLS_KEYSTORE_PASSWORD} \
-          -Dzookeeper.ssl.trustStore.location=${kafka_zk_truststore_location} \
-          -Dzookeeper.ssl.trustStore.password=${KAFKA_ZOOKEEPER_TLS_TRUSTSTORE_PASSWORD} \
+          -Dzookeeper.ssl.keystore.location=${keystore_location} \
+          -Dzookeeper.ssl.keystore.password=${KAFKA_ZOOKEEPER_TLS_KEYSTORE_PASSWORD} \
+          -Dzookeeper.ssl.truststore.location=${kafka_zk_truststore_location} \
+          -Dzookeeper.ssl.truststore.password=${KAFKA_ZOOKEEPER_TLS_TRUSTSTORE_PASSWORD} \
+          -Dzookeeper.ssl.quorum.hostnameVerification=${KAFKA_ZOOKEEPER_TLS_VERIFY_HOSTNAME} \
           -Dzookeeper.ssl.hostnameVerification=${KAFKA_ZOOKEEPER_TLS_VERIFY_HOSTNAME}"
 }
 
