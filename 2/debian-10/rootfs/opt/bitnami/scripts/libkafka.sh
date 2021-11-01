@@ -617,7 +617,7 @@ zookeeper.ssl.keystore.location=${keystore_location}
 zookeeper.ssl.keystore.password=${KAFKA_ZOOKEEPER_TLS_KEYSTORE_PASSWORD}
 zookeeper.ssl.truststore.location=${kafka_zk_truststore_location}
 zookeeper.ssl.truststore.password=${KAFKA_ZOOKEEPER_TLS_TRUSTSTORE_PASSWORD}
-zookeeper.ssl.hostnameVerification=${KAFKA_ZOOKEEPER_TLS_VERIFY_HOSTNAME} 
+zookeeper.ssl.hostnameVerification=${KAFKA_ZOOKEEPER_TLS_VERIFY_HOSTNAME}
 
 EOF
 
