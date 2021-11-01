@@ -320,7 +320,8 @@ kafka_generate_jaas_authentication_file() {
     local -r internal_protocol="${1:-}"
     local -r client_protocol="${2:-}"
 
-    if [[ ! -f "${KAFKA_CONF_DIR}/kafka_jaas.conf" ]]; then
+    if [[ ! -f "${KAFKA_CONF_DIR}/
+    .conf" ]]; then
         info "Generating JAAS authentication file"
 
         read -r -a users <<<"$(tr ',;' ' ' <<<"${KAFKA_CLIENT_USERS:-}")"
@@ -625,8 +626,9 @@ zookeeper_set_tls_config_properties()
     zookeeper.ssl.keystore.password=${KAFKA_ZOOKEEPER_TLS_KEYSTORE_PASSWORD}
     zookeeper.ssl.truststore.location=${kafka_zk_truststore_location}
     zookeeper.ssl.truststore.password=${KAFKA_ZOOKEEPER_TLS_TRUSTSTORE_PASSWORD}    
-    zookeeper.ssl.hostnameVerification=${KAFKA_ZOOKEEPER_TLS_VERIFY_HOSTNAME}
-    
+    zookeeper.ssl.hostnameVerification=${KAFKA_ZOOKEEPER_TLS_VERIFY_HOSTNAME}    
+    EOF
+
     export KAFKA_ZOOKEEPER_TLS_CONFIG_PROPERTIES_FILE="${KAFKA_CONF_DIR}/zk-tls-config.properties"
 }
 ########################
