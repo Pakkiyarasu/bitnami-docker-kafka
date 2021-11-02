@@ -446,7 +446,7 @@ EOF
 #   None
 #########################
 kafka_create_sasl_scram_zookeeper_users() {
-    export KAFKA_OPTS="-Djava.security.auth.login.config=${KAFKA_CONF_DIR}/kafka_jaas.conf"
+    export KAFKA_OPTS="$KAFKA_OPTS -Djava.security.auth.login.config=${KAFKA_CONF_DIR}/kafka_jaas.conf"
     info "Creating users in Zookeeper"
     read -r -a users <<<"$(tr ',;' ' ' <<<"${KAFKA_CLIENT_USERS}")"
     read -r -a passwords <<<"$(tr ',;' ' ' <<<"${KAFKA_CLIENT_PASSWORDS}")"
