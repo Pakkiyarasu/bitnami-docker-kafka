@@ -320,8 +320,7 @@ kafka_generate_jaas_authentication_file() {
     local -r internal_protocol="${1:-}"
     local -r client_protocol="${2:-}"
 
-    if [[ ! -f "${KAFKA_CONF_DIR}/
-    .conf" ]]; then
+    if [[ ! -f "${KAFKA_CONF_DIR}/kafka_jaas.conf" ]]; then
         info "Generating JAAS authentication file"
 
         read -r -a users <<<"$(tr ',;' ' ' <<<"${KAFKA_CLIENT_USERS:-}")"
