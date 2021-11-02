@@ -458,11 +458,7 @@ kafka_create_sasl_scram_zookeeper_users() {
         debug "Creating user ${users[i]} in zookeeper"
         # Ref: https://docs.confluent.io/current/kafka/authentication_sasl/authentication_sasl_scram.html#sasl-scram-overview
         if [[ "${KAFKA_ZOOKEEPER_PROTOCOL:-}" =~ SSL ]]; then
-            ZOOKEEPER_SSL_CONFIG=$(zookeeper_get_tls_config)
-            #cat >>"${KAFKA_CONF_DIR}/zk-tls-config.properties" <<EOF
-            #$(zookeeper_get_tls_config)
-            
-            #zookeeper_set_tls_config_properties
+            ZOOKEEPER_SSL_CONFIG=$(zookeeper_get_tls_config)            
             debug_execute kafka-configs.sh --zookeeper "$KAFKA_CFG_ZOOKEEPER_CONNECT" --zk-tls-config-file "$KAFKA_ZOOKEEPER_TLS_CONFIG_PROPERTIES_FILE" --alter --add-config "SCRAM-SHA-256=[iterations=8192,password=${passwords[i]}],SCRAM-SHA-512=[password=${passwords[i]}]" --entity-type users --entity-name "${users[i]}"
         else
             debug_execute kafka-configs.sh --zookeeper "$KAFKA_CFG_ZOOKEEPER_CONNECT" --alter --add-config "SCRAM-SHA-256=[iterations=8192,password=${passwords[i]}],SCRAM-SHA-512=[password=${passwords[i]}]" --entity-type users --entity-name "${users[i]}"
@@ -633,25 +629,6 @@ EOF
           -Dzookeeper.ssl.hostnameVerification=${KAFKA_ZOOKEEPER_TLS_VERIFY_HOSTNAME}"
 }
 
-##################
-# Get Zookeeper zk-tls-config.properties
-##################
-zookeeper_set_tls_config_properties()
-{
-    cat >>"${KAFKA_CONF_DIR}/zk-tls-config.properties" <<EOF
-zookeeper.clientCnxnSocket=org.apache.zookeeper.ClientCnxnSocketNetty
-zookeeper.ssl.client.enable=true
-zookeeper.ssl.keystore.location=${keystore_location}
-zookeeper.ssl.keystore.password=${KAFKA_ZOOKEEPER_TLS_KEYSTORE_PASSWORD}
-zookeeper.ssl.truststore.location=${kafka_zk_truststore_location}
-zookeeper.ssl.truststore.password=${KAFKA_ZOOKEEPER_TLS_TRUSTSTORE_PASSWORD}    
-zookeeper.ssl.hostnameVerification=${KAFKA_ZOOKEEPER_TLS_VERIFY_HOSTNAME}    
-
-EOF
-
-
-    export KAFKA_ZOOKEEPER_TLS_CONFIG_PROPERTIES_FILE="${KAFKA_CONF_DIR}/zk-tls-config.properties"
-}
 ########################
 # Configure Kafka configuration files from environment variables
 # Globals:
