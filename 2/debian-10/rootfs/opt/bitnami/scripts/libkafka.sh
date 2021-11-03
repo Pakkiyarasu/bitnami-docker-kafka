@@ -445,7 +445,7 @@ EOF
 #   None
 #########################
 kafka_create_sasl_scram_zookeeper_users() {
-    export KAFKA_OPTS="$KAFKA_OPTS -Djava.security.auth.login.config=${KAFKA_CONF_DIR}/kafka_jaas.conf"
+    export KAFKA_OPTS="-Djava.security.auth.login.config=${KAFKA_CONF_DIR}/kafka_jaas.conf"
     info "Creating users in Zookeeper"
     read -r -a users <<<"$(tr ',;' ' ' <<<"${KAFKA_CLIENT_USERS}")"
     read -r -a passwords <<<"$(tr ',;' ' ' <<<"${KAFKA_CLIENT_PASSWORDS}")"
@@ -458,12 +458,9 @@ kafka_create_sasl_scram_zookeeper_users() {
         # Ref: https://docs.confluent.io/current/kafka/authentication_sasl/authentication_sasl_scram.html#sasl-scram-overview
         if [[ "${KAFKA_ZOOKEEPER_PROTOCOL:-}" =~ SSL ]]; then
             ZOOKEEPER_SSL_CONFIG=$(zookeeper_get_tls_config)
-            export KAFKA_OPTS="$KAFKA_OPTS $ZOOKEEPER_SSL_CONFIG"
-            #debug_execute kafka-configs.sh --zookeeper "$KAFKA_CFG_ZOOKEEPER_CONNECT" --zk-tls-config-file "$KAFKA_ZOOKEEPER_TLS_CONFIG_PROPERTIES_FILE" --alter --add-config "SCRAM-SHA-256=[iterations=8192,password=${passwords[i]}],SCRAM-SHA-512=[password=${passwords[i]}]" --entity-type users --entity-name "${users[i]}"
-            debug_execute kafka-configs.sh --zookeeper "$KAFKA_CFG_ZOOKEEPER_CONNECT" --alter --add-config "SCRAM-SHA-256=[iterations=8192,password=${passwords[i]}],SCRAM-SHA-512=[password=${passwords[i]}]" --entity-type users --entity-name "${users[i]}"
-        else
-            debug_execute kafka-configs.sh --zookeeper "$KAFKA_CFG_ZOOKEEPER_CONNECT" --alter --add-config "SCRAM-SHA-256=[iterations=8192,password=${passwords[i]}],SCRAM-SHA-512=[password=${passwords[i]}]" --entity-type users --entity-name "${users[i]}"
-        fi    
+            export KAFKA_OPTS="$KAFKA_OPTS $ZOOKEEPER_SSL_CONFIG"            
+        fi
+        debug_execute kafka-configs.sh --zookeeper "$KAFKA_CFG_ZOOKEEPER_CONNECT" --alter --add-config "SCRAM-SHA-256=[iterations=8192,password=${passwords[i]}],SCRAM-SHA-512=[password=${passwords[i]}]" --entity-type users --entity-name "${users[i]}"
     done
 }
 
@@ -607,17 +604,6 @@ zookeeper_get_tls_config() {
         keystore_location="${KAFKA_CERTS_DIR}/zookeeper.keystore.pem"
     fi
     
-    cat >>"${KAFKA_ZOOKEEPER_TLS_CONFIG_PROPERTIES_FILE}" <<EOF
-zookeeper.clientCnxnSocket=org.apache.zookeeper.ClientCnxnSocketNetty
-zookeeper.ssl.client.enable=true
-zookeeper.ssl.keystore.location=${keystore_location}
-zookeeper.ssl.keystore.password=${KAFKA_ZOOKEEPER_TLS_KEYSTORE_PASSWORD}
-zookeeper.ssl.truststore.location=${kafka_zk_truststore_location}
-zookeeper.ssl.truststore.password=${KAFKA_ZOOKEEPER_TLS_TRUSTSTORE_PASSWORD}
-zookeeper.ssl.quorum.hostnameVerification=${KAFKA_ZOOKEEPER_TLS_VERIFY_HOSTNAME}
-zookeeper.ssl.hostnameVerification=${KAFKA_ZOOKEEPER_TLS_VERIFY_HOSTNAME}
-EOF
-
     echo "-Dzookeeper.clientCnxnSocket=org.apache.zookeeper.ClientCnxnSocketNetty \
           -Dzookeeper.client.secure=true \
           -Dzookeeper.ssl.keyStore.location=${keystore_location} \
