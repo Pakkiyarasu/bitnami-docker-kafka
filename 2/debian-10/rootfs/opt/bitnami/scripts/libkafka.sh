@@ -457,8 +457,9 @@ kafka_create_sasl_scram_zookeeper_users() {
         debug "Creating user ${users[i]} in zookeeper"
         # Ref: https://docs.confluent.io/current/kafka/authentication_sasl/authentication_sasl_scram.html#sasl-scram-overview
         if [[ "${KAFKA_ZOOKEEPER_PROTOCOL:-}" =~ SSL ]]; then
-            ZOOKEEPER_SSL_CONFIG=$(zookeeper_get_tls_config)            
-            debug_execute kafka-configs.sh --zookeeper "$KAFKA_CFG_ZOOKEEPER_CONNECT" --zk-tls-config-file "$KAFKA_ZOOKEEPER_TLS_CONFIG_PROPERTIES_FILE" --alter --add-config "SCRAM-SHA-256=[iterations=8192,password=${passwords[i]}],SCRAM-SHA-512=[password=${passwords[i]}]" --entity-type users --entity-name "${users[i]}"
+            export KAFKA_OPTS="$KAFKA_OPTS $zookeeper_get_tls_config"
+            #debug_execute kafka-configs.sh --zookeeper "$KAFKA_CFG_ZOOKEEPER_CONNECT" --zk-tls-config-file "$KAFKA_ZOOKEEPER_TLS_CONFIG_PROPERTIES_FILE" --alter --add-config "SCRAM-SHA-256=[iterations=8192,password=${passwords[i]}],SCRAM-SHA-512=[password=${passwords[i]}]" --entity-type users --entity-name "${users[i]}"
+            debug_execute kafka-configs.sh --zookeeper "$KAFKA_CFG_ZOOKEEPER_CONNECT" --alter --add-config "SCRAM-SHA-256=[iterations=8192,password=${passwords[i]}],SCRAM-SHA-512=[password=${passwords[i]}]" --entity-type users --entity-name "${users[i]}"
         else
             debug_execute kafka-configs.sh --zookeeper "$KAFKA_CFG_ZOOKEEPER_CONNECT" --alter --add-config "SCRAM-SHA-256=[iterations=8192,password=${passwords[i]}],SCRAM-SHA-512=[password=${passwords[i]}]" --entity-type users --entity-name "${users[i]}"
         fi    
@@ -616,8 +617,6 @@ zookeeper.ssl.quorum.hostnameVerification=${KAFKA_ZOOKEEPER_TLS_VERIFY_HOSTNAME}
 zookeeper.ssl.hostnameVerification=${KAFKA_ZOOKEEPER_TLS_VERIFY_HOSTNAME}
 EOF
 
-    #export KAFKA_ZOOKEEPER_TLS_CONFIG_PROPERTIES_FILE="${KAFKA_CONF_DIR}/zk-tls-config.properties"
-    
     echo "-Dzookeeper.clientCnxnSocket=org.apache.zookeeper.ClientCnxnSocketNetty \
           -Dzookeeper.client.secure=true \
           -Dzookeeper.ssl.keystore.location=${keystore_location} \
