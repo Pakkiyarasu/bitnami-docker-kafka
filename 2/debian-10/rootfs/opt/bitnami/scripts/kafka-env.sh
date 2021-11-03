@@ -74,7 +74,6 @@ export KAFKA_INITSCRIPTS_DIR="/docker-entrypoint-initdb.d"
 export KAFKA_LOG_DIR="${KAFKA_BASE_DIR}/logs"
 export KAFKA_HOME="$KAFKA_BASE_DIR"
 export PATH="${KAFKA_BASE_DIR}/bin:${BITNAMI_ROOT_DIR}/java/bin:${PATH}"
-export KAFKA_ZOOKEEPER_TLS_CONFIG_PROPERTIES_FILE="${KAFKA_CONF_DIR}/zk-tls-config.properties"
 
 # System users (when running with a privileged user)
 export KAFKA_DAEMON_USER="kafka"
