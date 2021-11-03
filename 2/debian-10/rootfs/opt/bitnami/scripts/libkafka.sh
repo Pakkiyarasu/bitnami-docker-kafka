@@ -623,7 +623,7 @@ EOF
           -Dzookeeper.ssl.keyStore.location=${keystore_location} \
           -Dzookeeper.ssl.keyStore.password=${KAFKA_ZOOKEEPER_TLS_KEYSTORE_PASSWORD} \
           -Dzookeeper.ssl.trustStore.location=${kafka_zk_truststore_location} \
-          -Dzookeeper.ssl.trustStore.password=${KAFKA_ZOOKEEPER_TLS_TRUSTSTORE_PASSWORD} \          
+          -Dzookeeper.ssl.trustStore.password=${KAFKA_ZOOKEEPER_TLS_TRUSTSTORE_PASSWORD} \
           -Dzookeeper.ssl.hostnameVerification=${KAFKA_ZOOKEEPER_TLS_VERIFY_HOSTNAME}"
 }
 
